@@ -51,6 +51,24 @@ public class UserRestController  {
             return body;
         }
     }
+    @PutMapping("/update_role")
+    public Map<String, String> update(@RequestBody User user){
+        User client = userService.findById(user.getId());
+        if (client != null){
+            client.setRole(roleService.findById(user.getRole().getId()));
+            userService.save(client);
+            Map<String, String> body = new HashMap<>();
+            body.put("code", "200");
+            body.put("message", "Cập nhật thành công");
+            return body;
+        }
+        else {
+            Map<String, String> body = new HashMap<>();
+            body.put("code", "400");
+            body.put("message", "Cập nhật không thành công");
+            return body;
+        }
+    }
     public static String generateRandomString(int length) {
         // Tập hợp ký tự ban đầu
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
