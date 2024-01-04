@@ -3,7 +3,9 @@
   display:flex;
   flex-direction: column;
   align-items: center;
-  margin: 20px;
+  margin-left: 450px;
+  margin-top: 200px;
+  width: 1000px;
 }
 
 .admin-userlist {
@@ -34,7 +36,7 @@
   height: 101vh;
   width: 101vw;
   margin : -1%;
-  background-color: gray;
+  background-color: hsl(212, 45%, 89%);
 }
 
 .register-box {
@@ -44,8 +46,9 @@
    
   background-color: hsl(212, 45%, 89%);
   border-radius: 8px;
-  height: 500px;
-  width: 700px;
+  height: 300px;
+  width: 400px;
+  padding: 50px 20px;
 }
 
 .login-input{
@@ -58,6 +61,7 @@
   width: 80%;
   height: 10%;
   margin-bottom: 10px;
+  margin-top: 20px;
 }
 
 
@@ -71,7 +75,7 @@
   height: 101vh;
   width: 101vw;
   margin : -1%;
-  background-color: gray;
+  background-color: white;
 }
 
 .register-box {
@@ -79,7 +83,7 @@
   flex-direction: column;
   align-items: center;
    
-  background-color: hsl(212, 45%, 89%);
+  background-color: white;
   border-radius: 8px;
   height: 500px;
   width: 700px;
@@ -92,8 +96,21 @@
 }
 
 .signup-button{
-  width: 80%;
+  width: 50%;
   height: 10%;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+#components-form-demo-normal-login .login-form {
+  max-width: 300px;
+}
+#components-form-demo-normal-login .login-form-forgot {
+  float: right;
+}
+#components-form-demo-normal-login .ant-col-rtl .login-form-forgot {
+  float: left;
+}
+#components-form-demo-normal-login .login-form-button {
+  width: 100%;
 }
 
