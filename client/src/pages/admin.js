@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Row, Col, Card, Checkbox, Table } from 'antd';
 
 const Admin = () => {
   const [users, setUsers] = useState([]);
@@ -43,34 +44,38 @@ const Admin = () => {
   };
 
   const renderUser = (user) => (
-    <div key={user.id} className='admin-userlist'>
-      <div className='user-info'>
-        <strong>Username:</strong> {user.username}, <strong>User ID:</strong> {user.id}
-      </div>
-      <div className='role-selection'>
-        {renderCheckbox('Admin', 3, user)}
-        {renderCheckbox('User', 1, user)}
-        {renderCheckbox('Moderator', 2, user)}
-      </div>
-    </div>
+          <Checkbox.Group
+            options={[
+              { label: 'Admin', value: 3 },
+              { label: 'User', value: 1 },
+              { label: 'Moderator', value: 2 },
+            ]}
+            value={[user.role.id]}
+            onChange={(checkedValues) => updateUserRoles(user.id, checkedValues[0])}
+          />
   );
 
-  const renderCheckbox = (label, role, user) => (
-    <>
-      <label htmlFor={`roleSelect_${user.id}_${role}`}>{label}:</label>
-      <input
-        id={`roleSelect_${user.id}_${role}`}
-        type="checkbox"
-        checked={user.role.id === role}
-        onChange={() => updateUserRoles(user.id, role)}
-      />
-    </>
-  );
+  const columns = [
+    {
+      title: "Username",
+      dataIndex: "username",
+      key: "username"
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email"
+    },
+    {
+      title: "Role",
+      key: "action",
+      render: (_, record) => (renderUser(record))
+    }]
 
   return (
     <div className='admin-container'>
-      <h1>Admin</h1>
-      {users.map(renderUser)}
+      <h1>User Management</h1>
+      <Table dataSource={users} columns={columns} rowKey={record => record.id} />
     </div>
   );
 };
