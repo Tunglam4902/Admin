@@ -9,4 +9,6 @@ public interface UserService {
     User save(User user);
     User checkLogin(String username, String pasword);
     User findById(int id);
+    User checkUsername(String username);
+    User findByToken(String token);
 }

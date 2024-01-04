@@ -4,6 +4,7 @@ import com.example.demo.dao.UserRepository;
 import com.example.demo.entity.User;
 import com.example.demo.service.RoleService;
 import com.example.demo.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
@@ -16,24 +17,43 @@ import java.util.Random;
 
 @RestController
 @RequestMapping("/api")
-
+@CrossOrigin(origins = "*")
 public class UserRestController  {
     @Autowired
     private UserService userService;
     @Autowired
     private RoleService roleService;
     @GetMapping("/users")
+    @CrossOrigin(origins = "*")
     public List<User> findAll(){
         return userService.findAll();
     }
+
+    @GetMapping("/test")
+    public String allAccess() {
+        return "ok";
+    }
+
     @PostMapping("/register")
-    public User register(@RequestBody User user){
-        user.setEmail(user.getEmail());
-        user.setPassword(user.getPassword());
-        user.setUsername(user.getUsername());
-        user.setRole(roleService.findById(1));
-        user.setToken(generateRandomString(20));
-        return userService.save(user);
+    public Map<String, String> register(@RequestBody User user){
+        if (userService.checkUsername(user.getUsername()) == null){
+            user.setEmail(user.getEmail());
+            user.setPassword(user.getPassword());
+            user.setUsername(user.getUsername());
+            user.setRole(roleService.findById(1));
+            user.setToken(generateRandomString(20));
+            userService.save(user);
+            Map<String, String> body = new HashMap<>();
+            body.put("code", "200");
+            body.put("token", user.getToken());
+            return body;
+        }
+        else {
+            Map<String, String> body = new HashMap<>();
+            body.put("code", "400");
+            body.put("message", "Username đã được sử dụng");
+            return body;
+        }
     }
     @PostMapping("/login")
     public Map<String, String> login(@RequestBody User user){
@@ -52,7 +72,30 @@ public class UserRestController  {
         }
     }
     @PutMapping("/update_role")
-    public Map<String, String> update(@RequestBody User user){
+    @CrossOrigin(origins = "*")
+    public Map<String, String> update(@RequestBody User user, HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        if (token == null){
+            Map<String, String> body = new HashMap<>();
+            body.put("code", "400");
+            body.put("Message", "Bạn không có quyền truy cập");
+            return body;
+        }
+        String[] tmp = token.split(" ");
+        token = tmp[1];
+        User admin = userService.findByToken(token);
+        if (admin == null){
+            Map<String, String> body = new HashMap<>();
+            body.put("code", "400");
+            body.put("Message", "Expired token");
+            return body;
+        }
+        if (admin.getRole().getId() != 3){
+            Map<String, String> body = new HashMap<>();
+            body.put("code", "400");
+            body.put("Message", "Bạn không đủ quyền truy cập");
+            return body;
+        }
         User client = userService.findById(user.getId());
         if (client != null){
             client.setRole(roleService.findById(user.getRole().getId()));
