@@ -2,6 +2,9 @@ import React,{useState} from 'react';
 import '../App.css'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Checkbox, Form, Input, Col, Row, Card } from 'antd';
+import useMessage from "antd/es/message/useMessage";
 
 
 
@@ -23,7 +26,8 @@ export default function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
-
+    const [messageApi, contextHolder] = useMessage();
+    
     const handleLogin = async () => {
         
         try{
@@ -36,8 +40,10 @@ export default function Login() {
                 localStorage.setItem('token', response.data.token); 
                 console.log(response.data.token)  
                 JumptoAdmin()
-            }else if(response.data.code === "400"){
-                setMessage("Đăng nhập không thành công")
+            }else if (response.data.code === "400") {
+                messageApi.error(
+                "Tài khoản hoặc mật khẩu không chính xác"
+            )
             }
             
         }catch(error){
@@ -46,30 +52,69 @@ export default function Login() {
     }    
 
     return (
-        <div className='login-theme' >
-            
-            <div className='register-box'>
-                <h1>Login</h1>
-                <input className='login-input' 
-                    type='username' 
-                    placeholder='username'
-                    value={username}
-                    onChange={(e)=>setUsername(e.target.value)}
-                    />
-                <input className='login-input' 
-                    type='password' 
-                    placeholder='Password'
-                    value={password}
-                    onChange={(e)=>setPassword(e.target.value)}
-                    />
-                <button className='login-button' onClick={handleLogin}>Log in</button>
-                <strong>{message}</strong>
-                <div className='jumptosignup'>
-                    <h2>Dont have account?</h2>
-                    <button onClick={Jumptosignup} className='jumptosignup-button'>Sign up</button>
-                </div>
-                
-            </div>
-        </div>
+        <>
+            {contextHolder}
+            <Row justify={"center"} align="middle" style={{ minHeight: '80vh' }}>
+                <Col xs={24} sm={18} md={14} lg={10} xl={8} >
+                    <Card title="Đăng Nhập">
+                        <Form
+                            name="normal_login"
+                            className="login-form"
+                            initialValues={{
+                                remember: true,
+                            }}
+                        >
+                            <Form.Item
+                                name="username"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input your Username!',
+                                    },
+                                ]}
+                            >
+                                <Input
+                                    type='username'
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)} prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
+                            </Form.Item>
+                            <Form.Item
+                                name="password"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input your Password!',
+                                    },
+                                ]}
+                            >
+                                <Input
+                                    type='password'
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    prefix={<LockOutlined className="site-form-item-icon" />}
+                                    placeholder="Password"
+                                />
+                            </Form.Item>
+                            <Form.Item>
+                                <Form.Item name="remember" valuePropName="checked" noStyle>
+                                    <Checkbox>Remember me</Checkbox>
+                                </Form.Item>
+
+                            </Form.Item>
+
+                            <Form.Item>
+                                <Button type="primary" onClick={handleLogin} className="login-form-button">
+                                    Log in
+                                </Button>
+                                <span style={{ margin: '0 8px' }}>Or</span>
+                                <a onClick={Jumptosignup} href="">
+                                    Register now!
+                                </a>
+                            </Form.Item>
+                        </Form>
+                    </Card>
+                </Col>
+            </Row>
+        </>
     );
 }
