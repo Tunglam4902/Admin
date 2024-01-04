@@ -20,6 +20,12 @@ export default function Login() {
     const JumptoAdmin = () => {
         navigate('/Admin')
     };
+    const JumptoModerator = () => {
+        navigate('/Moderator')
+    };
+    const JumptoAdmin = () => {
+        navigate('/Admin')
+    };
 
     
 
@@ -39,7 +45,13 @@ export default function Login() {
             if(response.data.code === "200"){
                 localStorage.setItem('token', response.data.token); 
                 console.log(response.data.token)  
-                JumptoAdmin()
+                if (response.data.role === "1"){
+                    JumptoUser()
+                }
+                else if (response.data.role === "2"){
+                    JumptoModerator()
+                }
+                else JumptoAdmin()
             }else if (response.data.code === "400") {
                 messageApi.error(
                 "Tài khoản hoặc mật khẩu không chính xác"
