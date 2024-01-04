@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Row, Col, Card, Checkbox, Table } from 'antd';
 
+
 const Admin = () => {
   const [users, setUsers] = useState([]);
   const token = localStorage.getItem('token');
@@ -29,18 +30,18 @@ const Admin = () => {
         'Authorization': `Bearer ${token}`
       }
     })
-    .then(response => {
-      if (response.data.code === '200') {
-        console.log('Role updated successfully');
-        
-        setUsers(users.map(user => user.id === userId ? {...user, role: {id: role}} : user));
-      } else {
-        console.log(response.data.Message);
-      }
-    })
-    .catch(error => {
-      console.error('There was an error!', error);
-    });
+      .then(response => {
+        if (response.data.code === '200') {
+          console.log('Role updated successfully');
+          setUsers(users.map(user => user.id === userId ? { ...user, role: { id: role } } : user));
+          console.log(users);
+        } else {
+          console.log(response.data.Message);
+        }
+      })
+      .catch(error => {
+        console.error('There was an error!', error);
+      });
   };
 
   const renderUser = (user) => (
@@ -51,7 +52,7 @@ const Admin = () => {
               { label: 'Moderator', value: 2 },
             ]}
             value={[user.role.id]}
-            onChange={(checkedValues) => updateUserRoles(user.id, checkedValues[0])}
+            onChange={(checkedValues) => updateUserRoles(user.id, checkedValues.filter(item=> item !== user.role.id)[0])}
           />
   );
 
