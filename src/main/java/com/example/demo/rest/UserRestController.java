@@ -27,13 +27,25 @@ public class UserRestController  {
         return userService.findAll();
     }
     @PostMapping("/register")
-    public User register(@RequestBody User user){
-        user.setEmail(user.getEmail());
-        user.setPassword(user.getPassword());
-        user.setUsername(user.getUsername());
-        user.setRole(roleService.findById(1));
-        user.setToken(generateRandomString(20));
-        return userService.save(user);
+    public Map<String, String> register(@RequestBody User user){
+        if (userService.checkUsername(user.getUsername()) == null){
+            user.setEmail(user.getEmail());
+            user.setPassword(user.getPassword());
+            user.setUsername(user.getUsername());
+            user.setRole(roleService.findById(1));
+            user.setToken(generateRandomString(20));
+            userService.save(user);
+            Map<String, String> body = new HashMap<>();
+            body.put("code", "200");
+            body.put("token", user.getToken());
+            return body;
+        }
+        else {
+            Map<String, String> body = new HashMap<>();
+            body.put("code", "400");
+            body.put("message", "Username đã được sử dụng");
+            return body;
+        }
     }
     @PostMapping("/login")
     public Map<String, String> login(@RequestBody User user){
