@@ -31,4 +31,8 @@ public class UserServiceImpl implements UserService {
     public User checkUsername(String username) {
         return userRepository.findByUsername(username);
     }
+    @Override
+    public User findByToken(String token) {
+        return userRepository.findByToken(token);
+    }
 }
