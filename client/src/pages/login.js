@@ -17,8 +17,8 @@ export default function Login() {
         navigate('/Signup');
     };
 
-    const JumptoAdmin = () => {
-        navigate('/Admin')
+    const JumptoUser = () => {
+        navigate('/User')
     };
     const JumptoModerator = () => {
         navigate('/Moderator')
