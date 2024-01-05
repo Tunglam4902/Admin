@@ -4,7 +4,7 @@ import com.example.demo.dao.UserRepository;
 import com.example.demo.entity.User;
 import com.example.demo.service.RoleService;
 import com.example.demo.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
+    import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
@@ -16,24 +16,18 @@ import java.util.Map;
 import java.util.Random;
 
 @RestController
-@RequestMapping("/api")
 @CrossOrigin(origins = "*")
+@RequestMapping("/api")
+
 public class UserRestController  {
     @Autowired
     private UserService userService;
     @Autowired
     private RoleService roleService;
     @GetMapping("/users")
-    @CrossOrigin(origins = "*")
     public List<User> findAll(){
         return userService.findAll();
     }
-
-    @GetMapping("/test")
-    public String allAccess() {
-        return "ok";
-    }
-
     @PostMapping("/register")
     public Map<String, String> register(@RequestBody User user){
         if (userService.checkUsername(user.getUsername()) == null){
@@ -62,6 +56,7 @@ public class UserRestController  {
             Map<String, String> body = new HashMap<>();
             body.put("code", "200");
             body.put("token", client.getToken());
+            body.put("role", String.valueOf(client.getRole().getId()));
             return body;
         }
         else {
@@ -72,7 +67,6 @@ public class UserRestController  {
         }
     }
     @PutMapping("/update_role")
-    @CrossOrigin(origins = "*")
     public Map<String, String> update(@RequestBody User user, HttpServletRequest request){
         String token = request.getHeader("Authorization");
         if (token == null){
@@ -112,6 +106,7 @@ public class UserRestController  {
             return body;
         }
     }
+
     public static String generateRandomString(int length) {
         // Tập hợp ký tự ban đầu
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
